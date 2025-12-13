@@ -110,7 +110,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('adminAuth', JSON.stringify({
         expiresAt,
         role: 'admin',
-        username: 'admin'
+        username: 'admin',
+        token: adminKey
       }));
       setIsAuthenticated(true);
       setUserRole('admin');
