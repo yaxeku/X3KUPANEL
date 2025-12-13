@@ -44,8 +44,9 @@ function AdminSocketProvider({ children }) {
     const currentUser = authData.username || 'Admin';
     const authToken = authData.token || '123';
 
-    const newSocket = io(serverUrl, {
-      path: '/admin/socket.io/',
+    // Connect to the admin namespace using the default socket.io path
+    const newSocket = io(`${serverUrl}/admin`, {
+      path: '/socket.io',
       transports: ['websocket', 'polling'],
       auth: {
         token: authToken,
