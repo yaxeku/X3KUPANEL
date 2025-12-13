@@ -6,11 +6,12 @@ const AdminSocketContext = createContext(null);
 
 // Get the server URL based on environment
 const getServerUrl = () => {
-  if (process.env.NODE_ENV === 'production') {
-    // On production/Render, use the current origin (same domain for both frontend and backend)
+  // In the browser, always use the current origin so we hit the same host as the served app
+  if (typeof window !== 'undefined' && window.location?.origin) {
     return window.location.origin;
   }
-  return 'http://localhost:3000'; // Local development
+  // Fallbacks for non-browser contexts
+  return import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
 };
 
 // Provider Component

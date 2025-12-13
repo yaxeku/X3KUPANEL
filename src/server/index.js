@@ -555,6 +555,7 @@ app.use((req, res, next) => {
         "frame-src https://challenges.cloudflare.com",  // This is crucial!
         "connect-src 'self' ws: wss:",
         "img-src 'self' data:",
+        "media-src 'self' https:",
         "base-uri 'self'",
         "form-action 'self'",
         "frame-ancestors 'none'",
@@ -930,7 +931,7 @@ const HTMLTransformer = {
                 "font-src 'self' data: https:",
                 "connect-src 'self' ws: wss:",
                 "frame-src 'self' https://challenges.cloudflare.com",
-                "media-src 'self'",
+                "media-src 'self' https:",
                 "object-src 'none'"
             ].join('; ');
 
@@ -1141,7 +1142,7 @@ const pageServingMiddleware = async (req, res, next) => {
                     "font-src 'self' data: https:",
                     "connect-src 'self' ws: wss:",
                     "frame-src 'self' https://challenges.cloudflare.com",
-                    "media-src 'self'",
+                    "media-src 'self' https:",
                     "object-src 'none'"
                 ].join('; '),
                 'X-Content-Type-Options': 'nosniff',
