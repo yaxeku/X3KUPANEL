@@ -553,7 +553,7 @@ app.use((req, res, next) => {
         "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
         "style-src 'self' 'unsafe-inline'",
         "frame-src https://challenges.cloudflare.com",  // This is crucial!
-        "connect-src 'self'",
+        "connect-src 'self' ws: wss:",
         "img-src 'self' data:",
         "base-uri 'self'",
         "form-action 'self'",
