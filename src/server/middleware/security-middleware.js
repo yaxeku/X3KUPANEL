@@ -5,7 +5,7 @@ export const securityMiddleware = {
   // Prevent debugger
   injectAntiDebug: (req, res, next) => {
     if (req.path.endsWith('.html')) {
-      res.header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline';");
+      res.header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; connect-src 'self' ws: wss:");
       
       // Inject anti-debug script at the top of HTML files
       const antiDebugScript = `
