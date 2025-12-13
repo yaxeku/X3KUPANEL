@@ -1,0 +1,6 @@
+
+> aio-panel@1.0.0 dev
+> concurrently "npm run dev:server" "npm run dev:admin"
+
+'concurrently' is not recognized as an internal or external command,
+operable program or batch file.

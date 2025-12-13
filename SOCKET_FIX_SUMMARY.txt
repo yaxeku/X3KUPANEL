@@ -1,0 +1,65 @@
+# Quick Fix Summary
+
+## Problem
+Admin panel stuck on "Connecting to server..." after deploying to Render.
+
+## Root Cause
+Socket.IO CORS configuration only accepted localhost. Render serves from a different domain.
+
+## Solutions Applied
+
+### 1. Server CORS Fix ✓
+- File: `src/server/index.js`
+- Changed: Hardcoded `localhost` only → Dynamic CORS that accepts any origin in production
+- Impact: Now accepts connections from Render domain
+
+### 2. Client Socket Connection Fix ✓
+- File: `src/admin/contexts/AdminSocket.jsx`
+- Changes:
+  - Uses `window.location.origin` in production (same domain as backend)
+  - Explicitly connects to `/admin` namespace via path: `/admin/socket.io/`
+  - Infinite reconnection attempts (won't timeout after 5 tries)
+  - Fallback to polling if websocket fails
+  - Comprehensive error logging with `[AdminSocket]` prefix
+
+### 3. Error Logging Added ✓
+- File: `src/admin/contexts/AdminSocket.jsx`
+- Added detailed console logs at every step:
+  - Connection initialization
+  - Server URL and environment detection
+  - Connection success/failure
+  - Specific error messages
+
+## Deploy Changes
+
+1. **Rebuild locally:**
+   ```bash
+   npm run build
+   ```
+
+2. **Push to Git or trigger Render rebuild:**
+   ```bash
+   git add .
+   git commit -m "Fix socket connection for Render deployment"
+   git push
+   ```
+
+3. **Verify in Render:**
+   - Check logs for "Server running on port..."
+   - Open admin panel and check browser console for `[AdminSocket]` logs
+   - Should see: `[AdminSocket] ✓ Connected to admin socket`
+
+## Debugging
+
+If still not working:
+1. Open DevTools (F12) → Console tab
+2. Look for messages starting with `[AdminSocket]`
+3. Check actual error message
+4. Verify backend is running: Visit `https://your-domain/` should respond
+5. Check render.yaml - ensure NODE_ENV=production and RENDER=true
+
+## Files Modified
+- ✅ `src/server/index.js` - CORS configuration
+- ✅ `src/admin/contexts/AdminSocket.jsx` - Connection logic and logging
+- ❌ `render.yaml` - No changes needed (already correct)
+- ✅ `DEPLOYMENT_FIX.md` - Full documentation (created)

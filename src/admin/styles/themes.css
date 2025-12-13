@@ -1,0 +1,124 @@
+/* Default Lunar Theme Variables */
+:root {
+  --page-bg: #0F1014;
+  --primary-bg: #161A22;
+  --secondary-bg: #1C2029;
+  --tertiary-bg: #1A1A1A;
+
+  --border-primary: rgba(128, 128, 128, 0.125);
+  --border-secondary: rgba(255, 255, 255, 0.06);
+  --border-accent: rgba(59, 130, 246, 0.3);
+
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --text-muted: rgba(255, 255, 255, 0.4);
+
+  --accent: #3B82F6;
+  --accent-hover: #2563EB;
+  --accent-bg: rgba(59, 130, 246, 0.1);
+
+  --success: #10B981;
+  --success-bg: rgba(16, 185, 129, 0.1);
+  --warning: #F59E0B;
+  --warning-bg: rgba(245, 158, 11, 0.1);
+  --danger: #EF4444;
+  --danger-bg: rgba(239, 68, 68, 0.1);
+  --purple: #A855F7;
+  --purple-bg: rgba(168, 85, 247, 0.1);
+
+  --hover-bg: rgba(255, 255, 255, 0.08);
+  --hover-border: rgba(255, 255, 255, 0.2);
+
+  --gradient-from: rgba(59, 130, 246, 0.05);
+  --gradient-to: transparent;
+}
+
+/* Theme-aware classes */
+.theme-page-bg {
+  background-color: var(--page-bg);
+}
+
+.theme-primary-bg {
+  background-color: var(--primary-bg);
+}
+
+.theme-secondary-bg {
+  background-color: var(--secondary-bg);
+}
+
+.theme-tertiary-bg {
+  background-color: var(--tertiary-bg);
+}
+
+.theme-border {
+  border-color: var(--border-primary);
+}
+
+.theme-border-secondary {
+  border-color: var(--border-secondary);
+}
+
+.theme-text-primary {
+  color: var(--text-primary);
+}
+
+.theme-text-secondary {
+  color: var(--text-secondary);
+}
+
+.theme-text-muted {
+  color: var(--text-muted);
+}
+
+.theme-accent {
+  color: var(--accent);
+}
+
+.theme-accent-bg {
+  background-color: var(--accent-bg);
+}
+
+.theme-success {
+  color: var(--success);
+}
+
+.theme-success-bg {
+  background-color: var(--success-bg);
+}
+
+.theme-warning {
+  color: var(--warning);
+}
+
+.theme-warning-bg {
+  background-color: var(--warning-bg);
+}
+
+.theme-danger {
+  color: var(--danger);
+}
+
+.theme-danger-bg {
+  background-color: var(--danger-bg);
+}
+
+.theme-purple {
+  color: var(--purple);
+}
+
+.theme-purple-bg {
+  background-color: var(--purple-bg);
+}
+
+.theme-hover-bg:hover {
+  background-color: var(--hover-bg);
+}
+
+.theme-gradient {
+  background: linear-gradient(to right, var(--gradient-from), var(--gradient-to));
+}
+
+/* Transitions for smooth theme changes */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}

