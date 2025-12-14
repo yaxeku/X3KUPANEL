@@ -1,18 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
-import { useAuth } from './AuthContext.jsx';
 
 // Context creation
 const AdminSocketContext = createContext(null);
 
 // Get the server URL based on environment
 const getServerUrl = () => {
-  // In the browser, always use the current origin so we hit the same host as the served app
-  if (typeof window !== 'undefined' && window.location?.origin) {
-    return window.location.origin;
+  if (process.env.NODE_ENV === 'production') {
+    return window.location.origin; // This will be your render.com URL
   }
-  // Fallbacks for non-browser contexts
-  return import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000';
+  return 'http://localhost:3000'; // Local development
 };
 
 // Provider Component
@@ -34,66 +31,37 @@ function AdminSocketProvider({ children }) {
   const [callers, setCallers] = useState([]);
   const [aliases, setAliases] = useState({});
 
-  const { isAuthenticated, userRole, currentUser } = useAuth();
-
   useEffect(() => {
     const serverUrl = getServerUrl();
-    console.log('[AdminSocket] Initializing socket connection...');
-    console.log('[AdminSocket] Server URL:', serverUrl);
-    console.log('[AdminSocket] Environment:', process.env.NODE_ENV);
 
-    if (!isAuthenticated) {
-      console.log('[AdminSocket] Skipping connect: not authenticated');
-      setIsConnected(false);
-      if (socket) {
-        socket.disconnect();
-        setSocket(null);
-      }
-      return;
-    }
-
+    // Get auth info from localStorage
     const authData = JSON.parse(localStorage.getItem('adminAuth') || '{}');
-    const authToken = authData.token;
-    const role = authData.role || userRole || 'admin';
-    const username = authData.username || currentUser || 'Admin';
+    const userRole = authData.role || 'admin';
+    const currentUser = authData.username || 'Admin';
+    const authToken = authData.token || '123'; // Use actual token for callers, default for admin
 
-    if (!authToken) {
-      console.warn('[AdminSocket] No token found; aborting connection');
-      return;
-    }
-
-    const newSocket = io(`${serverUrl}/admin`, {
-      path: '/socket.io',
+    // Change '/admin' to match the new route structure
+    const newSocket = io('/admin', {  // Remove the serverUrl concatenation
       transports: ['websocket', 'polling'],
       auth: {
         token: authToken,
-        role,
-        username
+        role: userRole,
+        username: currentUser
       },
       withCredentials: true,
       reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      reconnectionAttempts: Infinity,
-      upgrade: true
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000
     });
 
     newSocket.on('connect', () => {
-      console.log('[AdminSocket] ✓ Connected to admin socket');
+      console.log('Connected to admin socket');
       setIsConnected(true);
     });
 
-    newSocket.on('disconnect', (reason) => {
-      console.log('[AdminSocket] ✗ Disconnected from admin socket. Reason:', reason);
+    newSocket.on('disconnect', () => {
+      console.log('Disconnected from admin socket');
       setIsConnected(false);
-    });
-
-    newSocket.on('connect_error', (error) => {
-      console.error('[AdminSocket] Connection error:', error.message || error);
-    });
-
-    newSocket.on('error', (error) => {
-      console.error('[AdminSocket] Socket error:', error);
     });
 
     newSocket.on('session_created', (session) => {
@@ -139,7 +107,7 @@ function AdminSocketProvider({ children }) {
 
     newSocket.on('assignment_error', ({ error }) => {
       console.error('Assignment error:', error);
-      alert(error);
+      alert(error); // Simple alert for now, can be replaced with better notification
     });
 
     newSocket.on('assignments_cleared', ({ caller, count }) => {
@@ -173,6 +141,7 @@ function AdminSocketProvider({ children }) {
       setAliases(data.aliases || {});
     });
 
+    // Caller management events
     newSocket.on('caller_added', (caller) => {
       setCallers(prev => [...prev, caller]);
     });
@@ -187,6 +156,7 @@ function AdminSocketProvider({ children }) {
       setCallers(prev => prev.filter(c => c.id !== id));
     });
 
+    // Alias management events
     newSocket.on('alias_updated', ({ sessionId, alias }) => {
       setAliases(prev => ({
         ...prev,
@@ -194,15 +164,27 @@ function AdminSocketProvider({ children }) {
       }));
     });
 
+    // Redirect error handling
     newSocket.on('redirect_error', ({ error, sessionId }) => {
       console.error(`Redirect failed for session ${sessionId}: ${error}`);
+      // You could also show a toast notification here if you have a notification system
       alert(`Redirect failed: ${error}`);
     });
 
+    // Handle forced logout for callers
     newSocket.on('force_logout', ({ reason }) => {
       console.log('Force logout received:', reason);
+      // Clear auth and redirect to login
       localStorage.removeItem('adminAuth');
       window.location.href = '/admin';
+    });
+
+    newSocket.on('error', (error) => {
+      console.error('Socket error:', error);
+    });
+
+    newSocket.on('connect_error', (error) => {
+      console.error('Connection error:', error);
     });
 
     setSocket(newSocket);
@@ -210,7 +192,7 @@ function AdminSocketProvider({ children }) {
     return () => {
       newSocket.disconnect();
     };
-  }, [isAuthenticated, userRole, currentUser]);
+  }, []);
 
   // Caller management functions
   const addCaller = (callerData) => {

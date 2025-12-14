@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAdminSocket } from './contexts/AdminSocket';
+import { AdminSocketProvider, useAdminSocket } from './contexts/AdminSocket';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import Dashboard from './components/Dashboard';
@@ -89,7 +89,9 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <AppContent />
+        <AdminSocketProvider>
+          <AppContent />
+        </AdminSocketProvider>
       </AuthProvider>
     </ThemeProvider>
   );
