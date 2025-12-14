@@ -40,8 +40,8 @@ function AdminSocketProvider({ children }) {
     const currentUser = authData.username || 'Admin';
     const authToken = authData.token || '123'; // Use actual token for callers, default for admin
 
-    // Change '/admin' to match the new route structure
-    const newSocket = io('/admin', {  // Remove the serverUrl concatenation
+    // Connect to the admin namespace with the server URL
+    const newSocket = io(`${serverUrl}/admin`, {
       transports: ['websocket', 'polling'],
       auth: {
         token: authToken,
