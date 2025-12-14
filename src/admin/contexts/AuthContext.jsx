@@ -62,7 +62,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (accessKey) => {
-    const adminKey = import.meta.env.VITE_ADMIN_KEY;
+    // Use environment variable with fallback for development
+    const adminKey = import.meta.env.VITE_ADMIN_KEY || '123123123';
 
     // Check if it's a caller login (starts with caller_)
     if (accessKey.startsWith('caller_')) {
@@ -110,7 +111,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('adminAuth', JSON.stringify({
         expiresAt,
         role: 'admin',
-        username: 'admin'
+        username: 'admin',
+        token: accessKey // Store the admin key as token for socket authentication
       }));
       setIsAuthenticated(true);
       setUserRole('admin');

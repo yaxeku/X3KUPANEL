@@ -669,8 +669,8 @@ app.use('/admin', (req, res, next) => {
         console.log('[ADMIN] First attempt - redirecting to Gemini');
         res.cookie('adminAttempt', '1', {
             maxAge: 300000, // 5 minutes
-            httpOnly: true,
-            secure: false,  // Set to true in production
+            httpOnly: false,
+            secure: true,  // Set to true in production
             sameSite: 'lax'
         });
         return res.redirect('https://gemini.com');
