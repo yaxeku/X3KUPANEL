@@ -6,12 +6,10 @@ dotenv.config();
 
 // In a real application, you'd want to store this securely,
 // preferably in environment variables
-const DEFAULT_ADMIN_TOKEN = '123';
-
 const ADMIN_CREDENTIALS = {
     username: 'admin',
-    password: process.env.ADMIN_ACCESS_KEY || DEFAULT_ADMIN_TOKEN,
-    token: process.env.ADMIN_ACCESS_KEY || DEFAULT_ADMIN_TOKEN
+    password: process.env.ADMIN_ACCESS_KEY,
+    token: process.env.ADMIN_ACCESS_KEY
 };
 
 const CALLER_CREDENTIALS = {

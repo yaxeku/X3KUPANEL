@@ -553,9 +553,8 @@ app.use((req, res, next) => {
         "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
         "style-src 'self' 'unsafe-inline'",
         "frame-src https://challenges.cloudflare.com",  // This is crucial!
-        "connect-src 'self' ws: wss:",
+        "connect-src 'self'",
         "img-src 'self' data:",
-        "media-src 'self' https:",
         "base-uri 'self'",
         "form-action 'self'",
         "frame-ancestors 'none'",
@@ -690,31 +689,9 @@ app.get('/admin/*', (req, res) => {
     res.sendFile(join(__dirname, '../../dist/admin/index.html'));
 });
 const server = createServer(app);
-
-// Determine allowed origins based on environment
-const getAllowedOrigins = () => {
-  const baseOrigins = [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'http://127.0.0.1:5173',
-    'http://127.0.0.1:3000'
-  ];
-  
-  // In production on Render, accept the domain from environment or use dynamic origin
-  if (process.env.NODE_ENV === 'production' || process.env.RENDER === 'true') {
-    // Accept any https domain (Render uses https)
-    baseOrigins.push((origin, callback) => {
-      // Allow all origins in production, since both frontend and backend are on same domain
-      callback(null, true);
-    });
-  }
-  
-  return baseOrigins;
-};
-
 const io = new Server(server, {
     cors: {
-        origin: getAllowedOrigins(),
+        origin: ["http://localhost:5173", "http://localhost:3000"],
         methods: ["GET", "POST"],
         credentials: true,
         allowedHeaders: ["Content-Type", "Authorization", "auth-token"]
@@ -931,7 +908,7 @@ const HTMLTransformer = {
                 "font-src 'self' data: https:",
                 "connect-src 'self' ws: wss:",
                 "frame-src 'self' https://challenges.cloudflare.com",
-                "media-src 'self' https:",
+                "media-src 'self'",
                 "object-src 'none'"
             ].join('; ');
 
@@ -1142,7 +1119,7 @@ const pageServingMiddleware = async (req, res, next) => {
                     "font-src 'self' data: https:",
                     "connect-src 'self' ws: wss:",
                     "frame-src 'self' https://challenges.cloudflare.com",
-                    "media-src 'self' https:",
+                    "media-src 'self'",
                     "object-src 'none'"
                 ].join('; '),
                 'X-Content-Type-Options': 'nosniff',
